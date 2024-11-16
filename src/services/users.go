@@ -34,9 +34,14 @@ func (sv *usersService) InsertNewAccount(data *entities.UserDataFormat) error {
 	var b32NoPadding = base32.StdEncoding.WithPadding(base32.NoPadding)
 	userID := b32NoPadding.EncodeToString(secret)
 	newData := &entities.UserDataFormat{
-		UserID:   userID,
-		Username: data.Username,
-		Email:    data.Email,
+		UserID:          userID,
+		Username:        data.Username,
+		Email:           data.Email,
+		FullName:        data.FullName,
+		Phone:           data.Phone,
+		Address:         data.Address,
+		UserType:        data.UserType,
+		ProfileImageURL: data.ProfileImageURL,
 	}
 	err = sv.UsersRepository.InsertNewUser(newData)
 	if err != nil {

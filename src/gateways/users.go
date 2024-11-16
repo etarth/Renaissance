@@ -8,7 +8,6 @@ import (
 )
 
 func (h *HTTPGateway) GetAllUserData(ctx *fiber.Ctx) error {
-
 	data, err := h.UserService.GetAllUser()
 	if err != nil {
 		return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: "cannot get all users data"})

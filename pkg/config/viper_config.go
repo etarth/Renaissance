@@ -50,19 +50,10 @@ func loadProductionEnv() {
 			}(),
 		},
 		Db: Db{
-			Host: os.Getenv("DB_HOST"),
-			Port: func() int {
-				port, err := strconv.Atoi(os.Getenv("DB_PORT"))
-				if err != nil {
-					panic("error while loading db port")
-				}
-				return port
-			}(),
-			User:     os.Getenv("DB_USER"),
-			Password: os.Getenv("DB_PASS"),
-			Name:     os.Getenv("DB_NAME"),
-			SSLMode:  os.Getenv("DB_SSL_MODE"),
-			Timezone: os.Getenv("DB_TIMEZONE"),
+			URI:          os.Getenv("DB_URI"),
+			DatabaseName: os.Getenv("DB_DATABASE_NAME"),
+			Username:     os.Getenv("DB_USERNAME"),
+			Password:     os.Getenv("DB_PASSWORD"),
 		},
 		Jwt: Jwt{
 			ApiSecretKey:       os.Getenv("JWT_API_SECRET_KEY"),

@@ -2,8 +2,9 @@ package repositories
 
 import (
 	"Backend/pkg/config"
-	ds "Backend/pkg/database"
 	"Backend/pkg/s3client"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type repository struct {
@@ -12,7 +13,7 @@ type repository struct {
 	// DocumentRepository   DocumentRepository
 }
 
-func NewRepository(cfg config.Config, db *ds.MongoDB, s3 s3client.S3Client) Repository {
+func NewRepository(cfg config.Config, db *mongo.Database, s3 s3client.S3Client) Repository {
 	return &repository{
 		// UserRepository:       NewUserRepository(db),
 		// AttachmentRepository: NewAttachmentRepository(db, s3),

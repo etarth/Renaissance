@@ -3,9 +3,8 @@ package database
 import (
 	"context"
 	"log"
-	"os"
+	"time"
 
-	"go.elastic.co/apm/module/apmmongo"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -15,16 +14,22 @@ type MongoDB struct {
 	MongoDB *mongo.Client
 }
 
-func NewMongoDB(maxPoolSize uint64) *MongoDB {
+func ConnectToMongoDB(uri string, dbName string) (*mongo.Client, *mongo.Database) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	option := options.Client().ApplyURI(os.Getenv("MONGO_URI")).SetMonitor(apmmongo.CommandMonitor()).SetMaxPoolSize(maxPoolSize)
-	client, err0 := mongo.Connect(context.Background(), option)
-	if err0 != nil {
-		log.Fatal("error connection : ", err0)
+	clientOptions := options.Client().ApplyURI(uri)
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatalf("Failed to connect to MongoDB: %v", err)
 	}
 
-	return &MongoDB{
-		Context: context.Background(),
-		MongoDB: client,
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatalf("MongoDB connection error: %v", err)
 	}
+
+	log.Println("Connected to MongoDB")
+	database := client.Database(dbName)
+	return client, database
 }

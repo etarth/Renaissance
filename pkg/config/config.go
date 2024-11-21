@@ -16,13 +16,10 @@ type Server struct {
 }
 
 type Db struct {
-	Host     string `mapstructure:"db_host"`
-	Port     int    `mapstructure:"db_port"`
-	User     string `mapstructure:"db_user"`
-	Password string `mapstructure:"db_pass"`
-	Name     string `mapstructure:"db_name"`
-	SSLMode  string `mapstructure:"db_ssl_mode"`
-	Timezone string `mapstructure:"db_timezone"`
+	URI          string `mapstructure:"DB_URI"`
+	DatabaseName string `mapstructure:"DB_DATABASE_NAME"`
+	Username     string `mapstructure:"DB_USERNAME"`
+	Password     string `mapstructure:"DB_PASSWORD"`
 }
 
 type Jwt struct {

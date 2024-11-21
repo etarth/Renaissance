@@ -10,14 +10,19 @@ import (
 	"Backend/pkg/logger"
 	"Backend/pkg/s3client"
 	"Backend/pkg/validator"
+	"context"
 	"fmt"
+	"log"
 )
 
 func main() {
 	cfg := config.GetConfig()
-	fmt.Println('1')
-	db := database.NewMongoDB(10)
-	fmt.Println('1')
+	mongoClient, mongoDB := database.ConnectToMongoDB(cfg.GetDb().URI, cfg.GetDb().DatabaseName)
+	defer func() {
+		if err := mongoClient.Disconnect(context.Background()); err != nil {
+			log.Fatalf("Failed to disconnect MongoDB: %v", err)
+		}
+	}()
 	s3 := s3client.NewS3Client(cfg)
 	logger := logger.NewLogger(cfg)
 	validator, err := validator.NewDtoValidator()
@@ -25,7 +30,7 @@ func main() {
 		panic(fmt.Sprintf("Failed to create dto validator: %v", err))
 	}
 
-	repositories := repositories.NewRepository(cfg, db, s3)
+	repositories := repositories.NewRepository(cfg, mongoDB, s3)
 	usecases := usecases.NewUsecase(repositories, cfg, logger)
 	handlers := handlers.NewHandler(usecases, validator)
 

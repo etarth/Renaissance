@@ -43,10 +43,11 @@ func (s *FiberHttpServer) Start() {
 	router := s.initHttpServer()
 
 	// init modules
-	s.initAuthRouter(router, s.handlers)
-	s.initUserRouter(router, s.handlers)
-	s.initAttachmentRouter(router, s.handlers)
-	s.initDocumentRouter(router, s.handlers)
+	// s.initAuthRouter(router, s.handlers)
+	// s.initUserRouter(router, s.handlers)
+	// s.initAttachmentRouter(router, s.handlers)
+	// s.initDocumentRouter(router, s.handlers)
+	s.initArtistRouter(router, s.handlers)
 
 	// Setup signal capturing for graceful shutdown
 	quit := make(chan os.Signal, 1)
@@ -126,11 +127,11 @@ func (s *FiberHttpServer) initUserRouter(router fiber.Router, httpHandler handle
 	// userRouter.Delete("/:user_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().DeleteUserByID)
 }
 
-func (s *FiberHttpServer) initAttachmentRouter(router fiber.Router, httpHandler handlers.Handler) {
-	// attachmentRouter := router.Group("/attachments")
+func (s *FiberHttpServer) initArtistRouter(router fiber.Router, httpHandler handlers.Handler) {
+	artistRouter := router.Group("/artists")
 
-	// attachmentRouter.Post("/:document_id", httpHandler.Attachment().CreateAttachments)
-	// attachmentRouter.Delete("/:attachment_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.Attachment().DeleteAttachment)
+	artistRouter.Get("/", httpHandler.Artist().GetAllArtists)
+	artistRouter.Post("/", httpHandler.Artist().InsertNewArtist)
 }
 
 func (s *FiberHttpServer) initDocumentRouter(router fiber.Router, httpHandler handlers.Handler) {

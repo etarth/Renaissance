@@ -10,19 +10,13 @@ import (
 	"Backend/pkg/logger"
 	"Backend/pkg/s3client"
 	"Backend/pkg/validator"
-	"context"
 	"fmt"
-	"log"
 )
 
 func main() {
 	cfg := config.GetConfig()
-	mongoClient, mongoDB := database.ConnectToMongoDB(cfg.GetDb().URI, cfg.GetDb().DatabaseName)
-	defer func() {
-		if err := mongoClient.Disconnect(context.Background()); err != nil {
-			log.Fatalf("Failed to disconnect MongoDB: %v", err)
-		}
-	}()
+	mongoDB := database.ConnectToMongoDB(cfg.GetDb().URI, cfg.GetDb().DatabaseName)
+	defer mongoDB.Disconnect()
 	s3 := s3client.NewS3Client(cfg)
 	logger := logger.NewLogger(cfg)
 	validator, err := validator.NewDtoValidator()

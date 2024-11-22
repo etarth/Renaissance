@@ -6,4 +6,5 @@ type Usecase interface {
 	// User() UserUsecase
 	// Attachment() AttachmentUsecase
 	// Document() DocumentUsecase
+	Artist() IArtistUsecase
 }

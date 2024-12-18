@@ -48,6 +48,7 @@ func (s *FiberHttpServer) Start() {
 	// s.initAttachmentRouter(router, s.handlers)
 	// s.initDocumentRouter(router, s.handlers)
 	s.initArtistRouter(router, s.handlers)
+	s.initArtworkRouter(router, s.handlers)
 
 	// Setup signal capturing for graceful shutdown
 	quit := make(chan os.Signal, 1)
@@ -132,6 +133,12 @@ func (s *FiberHttpServer) initArtistRouter(router fiber.Router, httpHandler hand
 
 	artistRouter.Get("/", httpHandler.Artist().GetAllArtists)
 	artistRouter.Post("/", httpHandler.Artist().InsertNewArtist)
+}
+
+func (s *FiberHttpServer) initArtworkRouter(router fiber.Router, httpHandler handlers.Handler) {
+	artworkRouter := router.Group("/artworks")
+
+	artworkRouter.Get("/", httpHandler.Artwork().GetAllArtworks)
 }
 
 func (s *FiberHttpServer) initDocumentRouter(router fiber.Router, httpHandler handlers.Handler) {

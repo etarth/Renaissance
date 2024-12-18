@@ -11,7 +11,8 @@ type handler struct {
 	// UserHandler       *UserHandler
 	// AttachmentHandler *AttachmentHandler
 	// DocumentHandler   *DocumentHandler
-	ArtistHandler *ArtistHandler
+	ArtistHandler  *ArtistHandler
+	ArtworkHandler *ArtworkHandler
 }
 
 func NewHandler(usecases usecases.Usecase, validator validator.DTOValidator) Handler {
@@ -21,7 +22,8 @@ func NewHandler(usecases usecases.Usecase, validator validator.DTOValidator) Han
 		// UserHandler:       NewUserHandler(usecases.User(), validator),
 		// AttachmentHandler: NewAttachmentHandler(usecases.Attachment()),
 		// DocumentHandler:   NewDocumentHandler(usecases.Document(), validator),
-		ArtistHandler: NewArtistHandler(usecases.Artist(), validator),
+		ArtworkHandler: NewArtworkHandler(usecases.Artwork(), validator),
+		ArtistHandler:  NewArtistHandler(usecases.Artist(), validator),
 	}
 }
 
@@ -31,4 +33,8 @@ func NewHandler(usecases usecases.Usecase, validator validator.DTOValidator) Han
 
 func (h *handler) Artist() *ArtistHandler {
 	return h.ArtistHandler
+}
+
+func (h *handler) Artwork() *ArtworkHandler {
+	return h.ArtworkHandler
 }

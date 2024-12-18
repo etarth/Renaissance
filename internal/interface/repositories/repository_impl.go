@@ -7,7 +7,8 @@ import (
 )
 
 type repository struct {
-	ArtistRepository IArtistRepository
+	ArtistRepository  IArtistRepository
+	ArtworkRepository IArtworkRepository
 	// UserRepository       UserRepository
 	// AttachmentRepository AttachmentRepository
 	// DocumentRepository   DocumentRepository
@@ -15,7 +16,8 @@ type repository struct {
 
 func NewRepository(cfg config.Config, db *MongoDB, s3 s3client.S3Client) Repository {
 	return &repository{
-		ArtistRepository: NewArtistRepository(db),
+		ArtistRepository:  NewArtistRepository(db),
+		ArtworkRepository: NewArtworkRepository(db),
 		// UserRepository:       NewUserRepository(db),
 		// AttachmentRepository: NewAttachmentRepository(db, s3),
 		// DocumentRepository:   NewDocumentRepository(db),
@@ -24,6 +26,10 @@ func NewRepository(cfg config.Config, db *MongoDB, s3 s3client.S3Client) Reposit
 
 func (r *repository) Artist() IArtistRepository {
 	return r.ArtistRepository
+}
+
+func (r *repository) Artwork() IArtworkRepository {
+	return r.ArtworkRepository
 }
 
 // func (r *repository) User() UserRepository {

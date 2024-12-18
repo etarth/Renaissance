@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"Backend/internal/domain/entities"
 	"Backend/internal/interface/dtos"
 	"Backend/internal/interface/repositories"
 	"Backend/pkg/apperror"
@@ -72,4 +73,30 @@ func (u *artworkUsecase) GetArtworkById(req *dtos.ArtworkDTO, artworkId string) 
 		UpdatedAt:   artwork.UpdatedAt,
 	}
 	return res, nil
+}
+
+func (u *artworkUsecase) InsertNewArtwork(dto *dtos.InsertNewArtworkDTO) *apperror.AppError {
+	newArtwork := entities.Artwork{
+		ArtworkId:   dto.ArtworkId,
+		ArtistId:    dto.ArtistId,
+		Title:       dto.Title,
+		Description: dto.Description,
+		Category:    dto.Category,
+		Style:       dto.Style,
+		Width:       dto.Width,
+		Height:      dto.Height,
+		Price:       dto.Price,
+		ImageURL:    dto.ImageURL,
+		Stock:       dto.Stock,
+		CreatedAt:   dto.CreatedAt,
+		UpdatedAt:   dto.UpdatedAt,
+	}
+
+	if err := u.artworkRepository.InsertNewArtwork(newArtwork); err != true {
+		u.logger.Named("CreateArtwork").Error("Failed to insert user", zap.String("artistID", dto.ArtistId))
+		return apperror.InternalServerError("Failed to insert user")
+	}
+
+	u.logger.Named("CreateArtwork").Info("Success: ", zap.String("artist_id", newArtwork.ArtistId))
+	return nil
 }

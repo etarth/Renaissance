@@ -5,6 +5,7 @@ import (
 	"Backend/internal/interface/dtos"
 	"Backend/pkg/response"
 	"Backend/pkg/validator"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -49,24 +50,24 @@ func (h *ArtworkHandler) GetArtworkById(c *fiber.Ctx) error {
 	return resp.SendResponse(c, fiber.StatusOK)
 }
 
-// func (h *ArtworkHandler) InsertNewArtwork(c *fiber.Ctx) error {
-// 	var createArtworkDTO dtos.InsertNewArtworkDTO
-// 	if err := c.BodyParser(&createArtworkDTO); err != nil {
-// 		resp := response.NewResponseFactory(response.ERROR, err.Error())
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+func (h *ArtworkHandler) InsertNewArtwork(c *fiber.Ctx) error {
+	var createArtworkDTO dtos.InsertNewArtworkDTO
+	if err := c.BodyParser(&createArtworkDTO); err != nil {
+		resp := response.NewResponseFactory(response.ERROR, err.Error())
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	if errs := h.validator.Validate(createArtworkDTO); len(errs) > 0 {
-// 		resp := response.NewResponseFactory(response.ERROR, strings.Join(errs, ", "))
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+	if errs := h.validator.Validate(createArtworkDTO); len(errs) > 0 {
+		resp := response.NewResponseFactory(response.ERROR, strings.Join(errs, ", "))
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	apperr := h.artworkUsecase.InsertNewArtwork(&createArtworkDTO)
-// 	if apperr != nil {
-// 		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
-// 		return resp.SendResponse(c, apperr.HttpCode)
-// 	}
+	apperr := h.artworkUsecase.InsertNewArtwork(&createArtworkDTO)
+	if apperr != nil {
+		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
+		return resp.SendResponse(c, apperr.HttpCode)
+	}
 
-// 	resp := response.NewResponseFactory(response.SUCCESS, createArtworkDTO)
-// 	return resp.SendResponse(c, fiber.StatusCreated)
-// }
+	resp := response.NewResponseFactory(response.SUCCESS, createArtworkDTO)
+	return resp.SendResponse(c, fiber.StatusCreated)
+}

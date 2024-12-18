@@ -5,6 +5,7 @@ import (
 	. "Backend/pkg/database"
 	"context"
 
+	fiberlog "github.com/gofiber/fiber/v2/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -60,6 +61,14 @@ func (r *artworkRepository) GetArtworkById(artworkId string) (*entities.Artwork,
 	return &artwork, nil
 }
 
+func (r *artworkRepository) InsertNewArtwork(data entities.Artwork) bool {
+	if _, err := r.Collection.InsertOne(r.Context, data); err != nil {
+		fiberlog.Errorf("Artwork -> InsertNewArtwork: %s \n", err)
+		return false
+	}
+	return true
+}
+
 // func (r *artistRepository) GetArtistByUserId(userId string) (*entities.Artist, error) {
 // 	var artist entities.Artist
 // 	filter := bson.M{"user_id": userId}
@@ -74,14 +83,6 @@ func (r *artworkRepository) GetArtworkById(artworkId string) (*entities.Artwork,
 // 	}
 
 // 	return &artist, nil
-// }
-
-// func (r *artistRepository) InsertNewArtist(data entities.Artist) bool {
-// 	if _, err := r.Collection.InsertOne(r.Context, data); err != nil {
-// 		fiberlog.Errorf("Artist -> InsertNewArtist: %s \n", err)
-// 		return false
-// 	}
-// 	return true
 // }
 
 // func (r *artistRepository) UpdateArtistById(newData entities.Artist, artistId string) error {

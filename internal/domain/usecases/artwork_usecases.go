@@ -8,6 +8,9 @@ import (
 	"Backend/pkg/config"
 
 	"go.uber.org/zap"
+
+	"reflect"
+	"time"
 )
 
 type artworkUsecase struct {
@@ -98,5 +101,47 @@ func (u *artworkUsecase) InsertNewArtwork(dto *dtos.InsertNewArtworkDTO) *apperr
 	}
 
 	u.logger.Named("CreateArtwork").Info("Success: ", zap.String("artist_id", newArtwork.ArtistId))
+	return nil
+}
+
+func (u *artworkUsecase) UpdateArtworkById(newData dtos.UpdateArtworkByIdDTO, artworkId string) *apperror.AppError {
+	artwork, err := u.artworkRepository.GetArtworkById(artworkId)
+	if err != nil {
+		return apperror.InternalServerError("failed to fetch artwork")
+	}
+	if artwork == nil {
+		return apperror.NotFoundError("artwork not found")
+	}
+
+	// Reflect over newData and artwork to apply updates
+	newDataValue := reflect.ValueOf(newData)
+	artworkValue := reflect.ValueOf(artwork).Elem() // Dereference pointer
+
+	for i := 0; i < newDataValue.NumField(); i++ {
+		field := newDataValue.Type().Field(i) // Get the field definition
+		newValue := newDataValue.Field(i)     // Get the value of the field in newData
+
+		// Only update if the field is not the zero value (empty or nil)
+		if !newValue.IsZero() {
+			artworkField := artworkValue.FieldByName(field.Name)
+			if artworkField.IsValid() && artworkField.CanSet() {
+				// Handle both pointer and non-pointer types
+				if artworkField.Kind() == reflect.Ptr && newValue.Kind() != reflect.Ptr {
+					// If artwork field is a pointer but new value is not a pointer, we create a new pointer for the field
+					artworkField.Set(reflect.New(artworkField.Type().Elem()).Elem())
+				}
+				// Update the field with the new value
+				artworkField.Set(newValue)
+			}
+		}
+	}
+	artwork.UpdatedAt = time.Now() // Set the updatedAt timestamp
+
+	if err := u.artworkRepository.UpdateArtworkById(*artwork, artworkId); err != nil {
+		u.logger.Named("UpdateArtworkById").Error("Failed to update artwork", zap.String("artwork_id", artworkId))
+		return apperror.InternalServerError("failed to update artwork")
+	}
+
+	u.logger.Named("UpdateArtworkById").Info("Success", zap.String("artwork_id", artworkId))
 	return nil
 }

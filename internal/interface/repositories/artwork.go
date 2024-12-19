@@ -7,7 +7,7 @@ type IArtworkRepository interface {
 	GetArtworkById(artworkId string) (*entities.Artwork, error)
 	// GetArtistByUserId(userId string) (*entities.Artist, error)
 	InsertNewArtwork(data entities.Artwork) bool
-	// UpdateArtistById(newData entities.Artist, artistId string) error
+	UpdateArtworkById(newData entities.Artwork, artworkId string) error
 	// UpdateArtistByUserId(newData entities.Artist, userId string) error
 	// DeleteArtistById(artistId string) error
 	// DeleteArtistByUserId(userId string) error

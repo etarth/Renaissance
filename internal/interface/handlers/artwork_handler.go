@@ -71,3 +71,30 @@ func (h *ArtworkHandler) InsertNewArtwork(c *fiber.Ctx) error {
 	resp := response.NewResponseFactory(response.SUCCESS, createArtworkDTO)
 	return resp.SendResponse(c, fiber.StatusCreated)
 }
+func (h *ArtworkHandler) UpdateArtworkById(c *fiber.Ctx) error {
+	artworkId := c.Params("artwork_id")
+	if artworkId == "" {
+		resp := response.NewResponseFactory(response.ERROR, "artwork ID is required")
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
+
+	var updateArtworkDTO dtos.UpdateArtworkByIdDTO
+	if err := c.BodyParser(&updateArtworkDTO); err != nil {
+		resp := response.NewResponseFactory(response.ERROR, err.Error())
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
+
+	if errs := h.validator.Validate(updateArtworkDTO); len(errs) > 0 {
+		resp := response.NewResponseFactory(response.ERROR, strings.Join(errs, ", "))
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
+
+	apperr := h.artworkUsecase.UpdateArtworkById(updateArtworkDTO, artworkId)
+	if apperr != nil {
+		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
+		return resp.SendResponse(c, apperr.HttpCode)
+	}
+
+	resp := response.NewResponseFactory(response.SUCCESS, updateArtworkDTO)
+	return resp.SendResponse(c, fiber.StatusOK)
+}

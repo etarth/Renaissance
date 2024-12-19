@@ -10,7 +10,7 @@ type IArtworkUsecase interface {
 	GetArtworkById(req *dtos.ArtworkDTO, artworkId string) (*dtos.ArtworkDTO, *apperror.AppError)
 	// GetArtistByUserId(req *dtos.ArtistDTO, userId string) (*dtos.ArtistDTO, *apperror.AppError)
 	InsertNewArtwork(dto *dtos.InsertNewArtworkDTO) *apperror.AppError
-	// UpdateArtistById(newData dtos.ArtistDTO, artistId string) *apperror.AppError
+	UpdateArtworkById(newData dtos.UpdateArtworkByIdDTO, artworkId string) *apperror.AppError
 	// UpdateArtistByUserId(newData dtos.ArtistDTO, userId string) *apperror.AppError
 	// DeleteArtistById(artistId string) *apperror.AppError
 	// DeleteArtistByUserId(userId string) *apperror.AppError

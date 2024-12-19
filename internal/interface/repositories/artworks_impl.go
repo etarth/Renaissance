@@ -69,6 +69,20 @@ func (r *artworkRepository) InsertNewArtwork(data entities.Artwork) bool {
 	return true
 }
 
+func (r *artworkRepository) UpdateArtworkById(newData entities.Artwork, artworkId string) error {
+	artworkData := bson.M{"artwork_id": artworkId}
+
+	_, err := r.Collection.UpdateOne(r.Context, artworkData, bson.M{"$set": newData})
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil
+		}
+		return err
+	}
+	return nil
+}
+
 // func (r *artistRepository) GetArtistByUserId(userId string) (*entities.Artist, error) {
 // 	var artist entities.Artist
 // 	filter := bson.M{"user_id": userId}
@@ -83,21 +97,6 @@ func (r *artworkRepository) InsertNewArtwork(data entities.Artwork) bool {
 // 	}
 
 // 	return &artist, nil
-// }
-
-// func (r *artistRepository) UpdateArtistById(newData entities.Artist, artistId string) error {
-// 	artistData := bson.M{"artist_id": artistId}
-
-// 	_, err := r.Collection.UpdateOne(r.Context, artistData, bson.M{"$set": newData})
-
-// 	if err != nil {
-// 		if err == mongo.ErrNoDocuments {
-// 			return nil
-// 		}
-// 		return err
-// 	}
-
-// 	return nil
 // }
 
 // func (r *artistRepository) UpdateArtistByUserId(newData entities.Artist, userId string) error {

@@ -145,3 +145,22 @@ func (u *artworkUsecase) UpdateArtworkById(newData dtos.UpdateArtworkByIdDTO, ar
 	u.logger.Named("UpdateArtworkById").Info("Success", zap.String("artwork_id", artworkId))
 	return nil
 }
+
+func (u *artworkUsecase) DeleteArtworkById(artworkId string) *apperror.AppError {
+	artwork, err := u.artworkRepository.GetArtworkById(artworkId)
+	if err != nil {
+		return apperror.InternalServerError("failed to fetch artwork")
+	}
+	if artwork == nil {
+		return apperror.NotFoundError("artwork not found")
+	}
+
+	err = u.artworkRepository.DeleteArtworkById(artworkId)
+	if err != nil {
+		u.logger.Named("DeleteArtworkById").Error("Failed to delete artwork", zap.String("artwork_id", artworkId))
+		return apperror.InternalServerError("failed to delete artwork")
+	}
+
+	u.logger.Named("DeleteArtworkById").Info("Artwork deleted successfully", zap.String("artwork_id", artworkId))
+	return nil
+}

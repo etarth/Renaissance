@@ -114,20 +114,20 @@ func (r *artworkRepository) UpdateArtworkById(newData entities.Artwork, artworkI
 // 	return nil
 // }
 
-// func (r *artistRepository) DeleteArtistById(artistId string) error {
-// 	artistData := bson.M{"artist_id": artistId}
+func (r *artworkRepository) DeleteArtworkById(artworkId string) error {
+	artworkData := bson.M{"artwork_id": artworkId}
 
-// 	_, err := r.Collection.DeleteOne(r.Context, artistData)
+	_, err := r.Collection.DeleteOne(r.Context, artworkData)
 
-// 	if err != nil {
-// 		if err == mongo.ErrNoDocuments {
-// 			return nil
-// 		}
-// 		return err
-// 	}
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil
+		}
+		return err
+	}
 
-// 	return nil
-// }
+	return nil
+}
 
 // func (r *artistRepository) DeleteArtistByUserId(userId string) error {
 // 	artistData := bson.M{"user_id": userId}

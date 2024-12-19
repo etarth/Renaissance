@@ -71,6 +71,7 @@ func (h *ArtworkHandler) InsertNewArtwork(c *fiber.Ctx) error {
 	resp := response.NewResponseFactory(response.SUCCESS, createArtworkDTO)
 	return resp.SendResponse(c, fiber.StatusCreated)
 }
+
 func (h *ArtworkHandler) UpdateArtworkById(c *fiber.Ctx) error {
 	artworkId := c.Params("artwork_id")
 	if artworkId == "" {
@@ -96,5 +97,22 @@ func (h *ArtworkHandler) UpdateArtworkById(c *fiber.Ctx) error {
 	}
 
 	resp := response.NewResponseFactory(response.SUCCESS, updateArtworkDTO)
+	return resp.SendResponse(c, fiber.StatusOK)
+}
+
+func (h *ArtworkHandler) DeleteArtworkById(c *fiber.Ctx) error {
+	artworkId := c.Params("artwork_id")
+	if artworkId == "" {
+		resp := response.NewResponseFactory(response.ERROR, "artwork ID is required")
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
+
+	apperr := h.artworkUsecase.DeleteArtworkById(artworkId)
+	if apperr != nil {
+		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
+		return resp.SendResponse(c, apperr.HttpCode)
+	}
+
+	resp := response.NewResponseFactory(response.SUCCESS, "Artwork deleted successfully")
 	return resp.SendResponse(c, fiber.StatusOK)
 }

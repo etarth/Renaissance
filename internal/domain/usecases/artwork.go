@@ -12,6 +12,6 @@ type IArtworkUsecase interface {
 	InsertNewArtwork(dto *dtos.InsertNewArtworkDTO) *apperror.AppError
 	UpdateArtworkById(newData dtos.UpdateArtworkByIdDTO, artworkId string) *apperror.AppError
 	// UpdateArtistByUserId(newData dtos.ArtistDTO, userId string) *apperror.AppError
-	// DeleteArtistById(artistId string) *apperror.AppError
+	DeleteArtworkById(artworkId string) *apperror.AppError
 	// DeleteArtistByUserId(userId string) *apperror.AppError
 }

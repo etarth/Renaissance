@@ -142,6 +142,8 @@ func (s *FiberHttpServer) initArtworkRouter(router fiber.Router, httpHandler han
 	artworkRouter.Get("/:artwork_id", httpHandler.Artwork().GetArtworkById)
 	artworkRouter.Post("/", httpHandler.Artwork().InsertNewArtwork)
 	artworkRouter.Put("/:artwork_id", httpHandler.Artwork().UpdateArtworkById)
+	artworkRouter.Delete("/:artwork_id", httpHandler.Artwork().DeleteArtworkById)
+
 }
 
 func (s *FiberHttpServer) initDocumentRouter(router fiber.Router, httpHandler handlers.Handler) {

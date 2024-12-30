@@ -13,8 +13,9 @@ type usecase struct {
 	// UserUsecase       UserUsecase
 	// AttachmentUsecase AttachmentUsecase
 	// DocumentUsecase   DocumentUsecase
-	ArtistUsecase  IArtistUsecase
-	ArtworkUsecase IArtworkUsecase
+	ArtistUsecase   IArtistUsecase
+	ArtworkUsecase  IArtworkUsecase
+	WishlistUsecase IWishlistUsecase
 }
 
 func NewUsecase(repo repositories.Repository, cfg config.Config, logger *zap.Logger) Usecase {
@@ -24,8 +25,9 @@ func NewUsecase(repo repositories.Repository, cfg config.Config, logger *zap.Log
 		// UserUsecase:       NewUserUsecase(cfg, logger.Named("UserSvc"), repo.User()),
 		// AttachmentUsecase: NewAttachmentUsecase(cfg, logger.Named("AttachmentSvc"), repo.Attachment()),
 		// DocumentUsecase:   NewDocumentUsecase(cfg, logger.Named("DocumentSvc"), repo.Document(), repo.User()),
-		ArtistUsecase:  NewArtistUsecases(cfg, logger.Named("ArtistSvc"), repo.Artist()),
-		ArtworkUsecase: NewArtworkUsecases(cfg, logger.Named("ArtworkSvc"), repo.Artwork()),
+		ArtistUsecase:   NewArtistUsecases(cfg, logger.Named("ArtistSvc"), repo.Artist()),
+		ArtworkUsecase:  NewArtworkUsecases(cfg, logger.Named("ArtworkSvc"), repo.Artwork()),
+		WishlistUsecase: NewWishlistUsecases(cfg, logger.Named("WishlistSvc"), repo.Wishlist()),
 	}
 }
 
@@ -39,4 +41,8 @@ func (u *usecase) Artist() IArtistUsecase {
 
 func (u *usecase) Artwork() IArtworkUsecase {
 	return u.ArtworkUsecase
+}
+
+func (u *usecase) Wishlist() IWishlistUsecase {
+	return u.WishlistUsecase
 }

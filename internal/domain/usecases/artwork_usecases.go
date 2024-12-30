@@ -91,8 +91,8 @@ func (u *artworkUsecase) InsertNewArtwork(dto *dtos.InsertNewArtworkDTO) *apperr
 		Price:       dto.Price,
 		ImageURL:    dto.ImageURL,
 		Stock:       dto.Stock,
-		CreatedAt:   dto.CreatedAt,
-		UpdatedAt:   dto.UpdatedAt,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 
 	if err := u.artworkRepository.InsertNewArtwork(newArtwork); err != true {

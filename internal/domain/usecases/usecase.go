@@ -8,4 +8,5 @@ type Usecase interface {
 	// Document() DocumentUsecase
 	Artist() IArtistUsecase
 	Artwork() IArtworkUsecase
+	Wishlist() IWishlistUsecase
 }

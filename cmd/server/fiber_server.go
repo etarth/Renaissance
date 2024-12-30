@@ -49,6 +49,7 @@ func (s *FiberHttpServer) Start() {
 	// s.initDocumentRouter(router, s.handlers)
 	s.initArtistRouter(router, s.handlers)
 	s.initArtworkRouter(router, s.handlers)
+	s.initWishlistRouter(router, s.handlers)
 
 	// Setup signal capturing for graceful shutdown
 	quit := make(chan os.Signal, 1)
@@ -144,6 +145,15 @@ func (s *FiberHttpServer) initArtworkRouter(router fiber.Router, httpHandler han
 	artworkRouter.Put("/:artwork_id", httpHandler.Artwork().UpdateArtworkById)
 	artworkRouter.Delete("/:artwork_id", httpHandler.Artwork().DeleteArtworkById)
 
+}
+
+func (s *FiberHttpServer) initWishlistRouter(router fiber.Router, httpHandler handlers.Handler) {
+	wishlistRouter := router.Group("/wishlists")
+	wishlistRouter.Get("/:user_id", httpHandler.Wishlist().GetAllWishlistsByUserId)
+	// artworkRouter.Get("/:artwork_id", httpHandler.Artwork().GetArtworkById)
+	wishlistRouter.Post("/", httpHandler.Wishlist().InsertNewWishlist)
+	// artworkRouter.Put("/:artwork_id", httpHandler.Artwork().UpdateArtworkById)
+	// artworkRouter.Delete("/:artwork_id", httpHandler.Artwork().DeleteArtworkById)
 }
 
 func (s *FiberHttpServer) initDocumentRouter(router fiber.Router, httpHandler handlers.Handler) {

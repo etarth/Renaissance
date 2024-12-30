@@ -34,3 +34,10 @@ type Category struct {
 	CategoryName string `json:"category_name,omitempty" bson:"category_name,omitempty"`
 	Description  string `json:"description,omitempty" bson:"description,omitempty"`
 }
+
+type Wishlist struct {
+	FavoriteId string    `json:"favorite_id,omitempty" bson:"favorite_id,omitempty"`
+	UserId     string    `json:"user_id,omitempty" bson:"user_id,omitempty"`
+	ArtworkId  string    `json:"artwork_id,omitempty" bson:"artwork_id,omitempty"`
+	CreatedAt  time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
+}

@@ -23,7 +23,7 @@ func NewWishlistHandler(usecases usecases.IWishlistUsecase, validator validator.
 }
 
 func (h *WishlistHandler) GetAllWishlistsByUserId(c *fiber.Ctx) error {
-	userId := c.Params("user_id")
+	userId := c.Query("user_id")
 	if userId == "" {
 		resp := response.NewResponseFactory(response.ERROR, "User ID is required")
 		return resp.SendResponse(c, fiber.StatusBadRequest)
@@ -60,23 +60,22 @@ func (h *WishlistHandler) InsertNewWishlist(c *fiber.Ctx) error {
 	return resp.SendResponse(c, fiber.StatusCreated)
 }
 
-// func (h *ArtworkHandler) GetArtworkById(c *fiber.Ctx) error {
-// 	artworkId := c.Params("id")
-// 	if artworkId == "" {
-// 		resp := response.NewResponseFactory(response.ERROR, "Artwork ID is required")
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+func (h *WishlistHandler) GetWishlistById(c *fiber.Ctx) error {
+	favoriteId := c.Query("favorite_id")
+	if favoriteId == "" {
+		resp := response.NewResponseFactory(response.ERROR, "Wishlist ID is required")
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	req := &dtos.ArtworkDTO{}
-// 	artwork, err := h.artworkUsecase.GetArtworkById(req, artworkId)
-// 	if err != nil {
-// 		resp := response.NewResponseFactory(response.ERROR, err.Error())
-// 		return resp.SendResponse(c, fiber.StatusInternalServerError)
-// 	}
-
-// 	resp := response.NewResponseFactory(response.SUCCESS, artwork)
-// 	return resp.SendResponse(c, fiber.StatusOK)
-// }
+	req := &dtos.WishlistDTO{}
+	wishlist, err := h.wishlistUsecase.GetWishlistById(req, favoriteId)
+	if err != nil {
+		resp := response.NewResponseFactory(response.ERROR, err.Error())
+		return resp.SendResponse(c, fiber.StatusInternalServerError)
+	}
+	resp := response.NewResponseFactory(response.SUCCESS, wishlist)
+	return resp.SendResponse(c, fiber.StatusOK)
+}
 
 // func (h *ArtworkHandler) UpdateArtworkById(c *fiber.Ctx) error {
 // 	artworkId := c.Params("artwork_id")

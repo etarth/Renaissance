@@ -61,29 +61,20 @@ func (u *wishlistUsecase) InsertNewWishlist(dto *dtos.InsertNewWishlistDTO) *app
 	return nil
 }
 
-// func (u *artworkUsecase) GetArtworkById(req *dtos.ArtworkDTO, artworkId string) (*dtos.ArtworkDTO, *apperror.AppError) {
-// 	artwork, err := u.artworkRepository.GetArtworkById(artworkId)
-// 	if err != nil {
-// 		return nil, apperror.InternalServerError("failed to fetch artwork")
-// 	}
+func (u *wishlistUsecase) GetWishlistById(req *dtos.WishlistDTO, favoriteId string) (*dtos.WishlistDTO, *apperror.AppError) {
+	wishlist, err := u.wishlistRepository.GetWishlistById(favoriteId)
+	if err != nil {
+		return nil, apperror.InternalServerError("failed to fetch artwork")
+	}
 
-// 	res := &dtos.ArtworkDTO{
-// 		ArtworkId:   artwork.ArtworkId,
-// 		ArtistId:    artwork.ArtistId,
-// 		Title:       artwork.Title,
-// 		Description: artwork.Description,
-// 		Category:    artwork.Category,
-// 		Style:       artwork.Style,
-// 		Width:       artwork.Width,
-// 		Height:      artwork.Height,
-// 		Price:       artwork.Price,
-// 		ImageURL:    artwork.ImageURL,
-// 		Stock:       artwork.Stock,
-// 		CreatedAt:   artwork.CreatedAt,
-// 		UpdatedAt:   artwork.UpdatedAt,
-// 	}
-// 	return res, nil
-// }
+	res := &dtos.WishlistDTO{
+		FavoriteId: wishlist.FavoriteId,
+		UserId:     wishlist.UserId,
+		ArtworkId:  wishlist.ArtworkId,
+		CreatedAt:  wishlist.CreatedAt,
+	}
+	return res, nil
+}
 
 // func (u *artworkUsecase) UpdateArtworkById(newData dtos.UpdateArtworkByIdDTO, artworkId string) *apperror.AppError {
 // 	artwork, err := u.artworkRepository.GetArtworkById(artworkId)

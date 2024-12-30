@@ -8,7 +8,7 @@ import (
 type IWishlistUsecase interface {
 	GetAllWishlistsByUserId(req *dtos.WishlistDTO, userId string) ([]dtos.WishlistDTO, *apperror.AppError)
 	InsertNewWishlist(dto *dtos.InsertNewWishlistDTO) *apperror.AppError
-	// GetArtworkById(req *dtos.ArtworkDTO, artworkId string) (*dtos.ArtworkDTO, *apperror.AppError)
+	GetWishlistById(req *dtos.WishlistDTO, favoriteId string) (*dtos.WishlistDTO, *apperror.AppError)
 	// GetArtistByUserId(req *dtos.ArtistDTO, userId string) (*dtos.ArtistDTO, *apperror.AppError)
 	// UpdateArtworkById(newData dtos.UpdateArtworkByIdDTO, artworkId string) *apperror.AppError
 	// UpdateArtistByUserId(newData dtos.ArtistDTO, userId string) *apperror.AppError

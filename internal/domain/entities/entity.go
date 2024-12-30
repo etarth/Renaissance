@@ -25,8 +25,8 @@ type Artwork struct {
 	Price       float32    `json:"price,omitempty" bson:"price,omitempty"`
 	ImageURL    string     `json:"image_url,omitempty" bson:"image_url,omitempty"`
 	Stock       int        `json:"stock,omitempty" bson:"stock,omitempty"`
-	CreatedAt   time.Time  `json:"created_at,omitempty" bson:"created_at,omitempty"`
-	UpdatedAt   time.Time  `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
+	CreatedAt   time.Time  `json:"created_at" bson:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at" bson:"updated_at"`
 }
 
 type Category struct {

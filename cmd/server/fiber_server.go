@@ -140,17 +140,18 @@ func (s *FiberHttpServer) initArtworkRouter(router fiber.Router, httpHandler han
 	artworkRouter := router.Group("/artworks")
 
 	artworkRouter.Get("/", httpHandler.Artwork().GetAllArtworks)
-	artworkRouter.Get("/:artwork_id", httpHandler.Artwork().GetArtworkById)
+	artworkRouter.Get("/artwork", httpHandler.Artwork().GetArtworkById)
 	artworkRouter.Post("/", httpHandler.Artwork().InsertNewArtwork)
-	artworkRouter.Put("/:artwork_id", httpHandler.Artwork().UpdateArtworkById)
-	artworkRouter.Delete("/:artwork_id", httpHandler.Artwork().DeleteArtworkById)
+	artworkRouter.Put("/", httpHandler.Artwork().UpdateArtworkById)
+	artworkRouter.Delete("/", httpHandler.Artwork().DeleteArtworkById)
 
 }
 
 func (s *FiberHttpServer) initWishlistRouter(router fiber.Router, httpHandler handlers.Handler) {
 	wishlistRouter := router.Group("/wishlists")
-	wishlistRouter.Get("/:user_id", httpHandler.Wishlist().GetAllWishlistsByUserId)
-	// artworkRouter.Get("/:artwork_id", httpHandler.Artwork().GetArtworkById)
+
+	wishlistRouter.Get("/", httpHandler.Wishlist().GetAllWishlistsByUserId)
+	wishlistRouter.Get("/wishlist", httpHandler.Wishlist().GetWishlistById)
 	wishlistRouter.Post("/", httpHandler.Wishlist().InsertNewWishlist)
 	// artworkRouter.Put("/:artwork_id", httpHandler.Artwork().UpdateArtworkById)
 	// artworkRouter.Delete("/:artwork_id", httpHandler.Artwork().DeleteArtworkById)

@@ -6,11 +6,11 @@ import (
 	"Backend/internal/interface/repositories"
 	"Backend/pkg/apperror"
 	"Backend/pkg/config"
+	"time"
 
 	"go.uber.org/zap"
 
 	"reflect"
-	"time"
 )
 
 type artworkUsecase struct {
@@ -58,6 +58,10 @@ func (u *artworkUsecase) GetArtworkById(req *dtos.ArtworkDTO, artworkId string) 
 	artwork, err := u.artworkRepository.GetArtworkById(artworkId)
 	if err != nil {
 		return nil, apperror.InternalServerError("failed to fetch artwork")
+	}
+
+	if artwork == nil {
+		return &dtos.ArtworkDTO{}, nil
 	}
 
 	res := &dtos.ArtworkDTO{

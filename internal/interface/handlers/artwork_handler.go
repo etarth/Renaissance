@@ -33,7 +33,7 @@ func (h *ArtworkHandler) GetAllArtworks(c *fiber.Ctx) error {
 }
 
 func (h *ArtworkHandler) GetArtworkById(c *fiber.Ctx) error {
-	artworkId := c.Params("id")
+	artworkId := c.Query("artwork_id")
 	if artworkId == "" {
 		resp := response.NewResponseFactory(response.ERROR, "Artwork ID is required")
 		return resp.SendResponse(c, fiber.StatusBadRequest)
@@ -73,7 +73,7 @@ func (h *ArtworkHandler) InsertNewArtwork(c *fiber.Ctx) error {
 }
 
 func (h *ArtworkHandler) UpdateArtworkById(c *fiber.Ctx) error {
-	artworkId := c.Params("artwork_id")
+	artworkId := c.Query("artwork_id")
 	if artworkId == "" {
 		resp := response.NewResponseFactory(response.ERROR, "artwork ID is required")
 		return resp.SendResponse(c, fiber.StatusBadRequest)
@@ -101,7 +101,7 @@ func (h *ArtworkHandler) UpdateArtworkById(c *fiber.Ctx) error {
 }
 
 func (h *ArtworkHandler) DeleteArtworkById(c *fiber.Ctx) error {
-	artworkId := c.Params("artwork_id")
+	artworkId := c.Query("artwork_id")
 	if artworkId == "" {
 		resp := response.NewResponseFactory(response.ERROR, "artwork ID is required")
 		return resp.SendResponse(c, fiber.StatusBadRequest)

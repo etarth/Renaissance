@@ -45,32 +45,32 @@ func (r *wishlistRepository) GetAllWishlistsByUserId(userId string) ([]entities.
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
-	print("kuy")
 	return wishlists, nil
 }
 
 func (r *wishlistRepository) InsertNewWishlist(data entities.Wishlist) bool {
 	if _, err := r.Collection.InsertOne(r.Context, data); err != nil {
-		fiberlog.Errorf("Artist -> InsertNewArtist: %s \n", err)
+		fiberlog.Errorf("Wishlistist -> InsertNewWishlist: %s \n", err)
 		return false
 	}
 	return true
 }
 
-// func (r *artistRepository) GetArtistById(artistId string) (*entities.Artist, error) {
-// 	var artist entities.Artist
-// 	filter := bson.M{"artist_id": artistId}
+func (r *wishlistRepository) GetWishlistById(favoriteId string) (*entities.Wishlist, error) {
+	var wishlist entities.Wishlist
+	filter := bson.M{"favorite_id": favoriteId}
 
-// 	err := r.Collection.FindOne(r.Context, filter).Decode(&artist)
+	err := r.Collection.FindOne(r.Context, filter).Decode(&wishlist)
 
-// 	if err != nil {
-// 		if err == mongo.ErrNoDocuments {
-// 			return nil, nil
-// 		}
-// 		return nil, err
-// 	}
-// 	return &artist, nil
-// }
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	print(&wishlist)
+	return &wishlist, nil
+}
 
 // func (r *artistRepository) GetArtistByUserId(userId string) (*entities.Artist, error) {
 // 	var artist entities.Artist

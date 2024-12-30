@@ -51,7 +51,6 @@ func (r *artworkRepository) GetArtworkById(artworkId string) (*entities.Artwork,
 	filter := bson.M{"artwork_id": artworkId}
 
 	err := r.Collection.FindOne(r.Context, filter).Decode(&artwork)
-
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil

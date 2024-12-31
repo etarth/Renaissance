@@ -9,4 +9,5 @@ type Usecase interface {
 	Artist() IArtistUsecase
 	Artwork() IArtworkUsecase
 	Wishlist() IWishlistUsecase
+	OrderItems() IOrderItemsUsecase
 }

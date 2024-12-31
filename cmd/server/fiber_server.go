@@ -50,6 +50,7 @@ func (s *FiberHttpServer) Start() {
 	s.initArtistRouter(router, s.handlers)
 	s.initArtworkRouter(router, s.handlers)
 	s.initWishlistRouter(router, s.handlers)
+	s.initOrderItemsRouter(router, s.handlers)
 
 	// Setup signal capturing for graceful shutdown
 	quit := make(chan os.Signal, 1)
@@ -144,7 +145,6 @@ func (s *FiberHttpServer) initArtworkRouter(router fiber.Router, httpHandler han
 	artworkRouter.Post("/", httpHandler.Artwork().InsertNewArtwork)
 	artworkRouter.Put("/", httpHandler.Artwork().UpdateArtworkById)
 	artworkRouter.Delete("/", httpHandler.Artwork().DeleteArtworkById)
-
 }
 
 func (s *FiberHttpServer) initWishlistRouter(router fiber.Router, httpHandler handlers.Handler) {
@@ -155,6 +155,18 @@ func (s *FiberHttpServer) initWishlistRouter(router fiber.Router, httpHandler ha
 	wishlistRouter.Post("/", httpHandler.Wishlist().InsertNewWishlist)
 	// artworkRouter.Put("/:artwork_id", httpHandler.Artwork().UpdateArtworkById)
 	wishlistRouter.Delete("/", httpHandler.Wishlist().DeleteWishlistById)
+}
+
+func (s *FiberHttpServer) initOrderItemsRouter(router fiber.Router, httpHandler handlers.Handler) {
+	artworkRouter := router.Group("/orderItems")
+
+	artworkRouter.Get("/", httpHandler.OrderItems().GetAllOrderItems)
+	artworkRouter.Get("/", httpHandler.OrderItems().GetAllOrderItemsByOrderId)
+	// artworkRouter.Get("/artwork", httpHandler.Artwork().GetArtworkById)
+	// artworkRouter.Post("/", httpHandler.Artwork().InsertNewArtwork)
+	// artworkRouter.Put("/", httpHandler.Artwork().UpdateArtworkById)
+	// artworkRouter.Delete("/", httpHandler.Artwork().DeleteArtworkById)
+
 }
 
 func (s *FiberHttpServer) initDocumentRouter(router fiber.Router, httpHandler handlers.Handler) {

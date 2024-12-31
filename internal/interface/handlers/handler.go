@@ -9,4 +9,5 @@ type Handler interface {
 	Artist() *ArtistHandler
 	Artwork() *ArtworkHandler
 	Wishlist() *WishlistHandler
+	OrderItems() *OrderItemsHandler
 }

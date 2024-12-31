@@ -12,6 +12,6 @@ type IWishlistUsecase interface {
 	// GetArtistByUserId(req *dtos.ArtistDTO, userId string) (*dtos.ArtistDTO, *apperror.AppError)
 	// UpdateArtworkById(newData dtos.UpdateArtworkByIdDTO, artworkId string) *apperror.AppError
 	// UpdateArtistByUserId(newData dtos.ArtistDTO, userId string) *apperror.AppError
-	// DeleteArtworkById(artworkId string) *apperror.AppError
+	DeleteWishlistById(favoriteId string) *apperror.AppError
 	// DeleteArtistByUserId(userId string) *apperror.AppError
 }

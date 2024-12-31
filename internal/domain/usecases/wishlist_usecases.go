@@ -67,6 +67,10 @@ func (u *wishlistUsecase) GetWishlistById(req *dtos.WishlistDTO, favoriteId stri
 		return nil, apperror.InternalServerError("failed to fetch artwork")
 	}
 
+	if wishlist == nil {
+		return &dtos.WishlistDTO{}, nil
+	}
+
 	res := &dtos.WishlistDTO{
 		FavoriteId: wishlist.FavoriteId,
 		UserId:     wishlist.UserId,
@@ -74,6 +78,25 @@ func (u *wishlistUsecase) GetWishlistById(req *dtos.WishlistDTO, favoriteId stri
 		CreatedAt:  wishlist.CreatedAt,
 	}
 	return res, nil
+}
+
+func (u *wishlistUsecase) DeleteWishlistById(favoriteId string) *apperror.AppError {
+	wishlist, err := u.wishlistRepository.GetWishlistById(favoriteId)
+	if err != nil {
+		return apperror.InternalServerError("failed to fetch wishlist")
+	}
+	if wishlist == nil {
+		return apperror.NotFoundError("artwork not found")
+	}
+
+	err = u.wishlistRepository.DeleteWishlistById(favoriteId)
+	if err != nil {
+		u.logger.Named("DeleteWishlistById").Error("Failed to delete wishlist", zap.String("favorite_id", favoriteId))
+		return apperror.InternalServerError("failed to delete wishlist")
+	}
+
+	u.logger.Named("DeleteWishlistById").Info("Wishlist deleted successfully", zap.String("favorite_id", favoriteId))
+	return nil
 }
 
 // func (u *artworkUsecase) UpdateArtworkById(newData dtos.UpdateArtworkByIdDTO, artworkId string) *apperror.AppError {
@@ -115,24 +138,5 @@ func (u *wishlistUsecase) GetWishlistById(req *dtos.WishlistDTO, favoriteId stri
 // 	}
 
 // 	u.logger.Named("UpdateArtworkById").Info("Success", zap.String("artwork_id", artworkId))
-// 	return nil
-// }
-
-// func (u *artworkUsecase) DeleteArtworkById(artworkId string) *apperror.AppError {
-// 	artwork, err := u.artworkRepository.GetArtworkById(artworkId)
-// 	if err != nil {
-// 		return apperror.InternalServerError("failed to fetch artwork")
-// 	}
-// 	if artwork == nil {
-// 		return apperror.NotFoundError("artwork not found")
-// 	}
-
-// 	err = u.artworkRepository.DeleteArtworkById(artworkId)
-// 	if err != nil {
-// 		u.logger.Named("DeleteArtworkById").Error("Failed to delete artwork", zap.String("artwork_id", artworkId))
-// 		return apperror.InternalServerError("failed to delete artwork")
-// 	}
-
-// 	u.logger.Named("DeleteArtworkById").Info("Artwork deleted successfully", zap.String("artwork_id", artworkId))
 // 	return nil
 // }

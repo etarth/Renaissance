@@ -154,7 +154,7 @@ func (s *FiberHttpServer) initWishlistRouter(router fiber.Router, httpHandler ha
 	wishlistRouter.Get("/wishlist", httpHandler.Wishlist().GetWishlistById)
 	wishlistRouter.Post("/", httpHandler.Wishlist().InsertNewWishlist)
 	// artworkRouter.Put("/:artwork_id", httpHandler.Artwork().UpdateArtworkById)
-	// artworkRouter.Delete("/:artwork_id", httpHandler.Artwork().DeleteArtworkById)
+	wishlistRouter.Delete("/", httpHandler.Wishlist().DeleteWishlistById)
 }
 
 func (s *FiberHttpServer) initDocumentRouter(router fiber.Router, httpHandler handlers.Handler) {

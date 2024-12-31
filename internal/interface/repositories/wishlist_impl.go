@@ -72,6 +72,21 @@ func (r *wishlistRepository) GetWishlistById(favoriteId string) (*entities.Wishl
 	return &wishlist, nil
 }
 
+func (r *wishlistRepository) DeleteWishlistById(favoriteId string) error {
+	wishlistData := bson.M{"favorite_id": favoriteId}
+
+	_, err := r.Collection.DeleteOne(r.Context, wishlistData)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil
+		}
+		return err
+	}
+
+	return nil
+}
+
 // func (r *artistRepository) GetArtistByUserId(userId string) (*entities.Artist, error) {
 // 	var artist entities.Artist
 // 	filter := bson.M{"user_id": userId}
@@ -107,21 +122,6 @@ func (r *wishlistRepository) GetWishlistById(favoriteId string) (*entities.Wishl
 // 	artistData := bson.M{"user_id": userId}
 
 // 	_, err := r.Collection.UpdateOne(r.Context, artistData, bson.M{"$set": newData})
-
-// 	if err != nil {
-// 		if err == mongo.ErrNoDocuments {
-// 			return nil
-// 		}
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
-// func (r *artistRepository) DeleteArtistById(artistId string) error {
-// 	artistData := bson.M{"artist_id": artistId}
-
-// 	_, err := r.Collection.DeleteOne(r.Context, artistData)
 
 // 	if err != nil {
 // 		if err == mongo.ErrNoDocuments {

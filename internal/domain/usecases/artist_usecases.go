@@ -49,7 +49,6 @@ func (u *artistUsecase) InsertNewArtist(dto *dtos.InsertNewArtistDTO) *apperror.
 	// 	u.logger.Named("CreateArtist").Error("user not found", zap.String("userID", dto.UserId), zap.Error(err))
 	// 	return apperror.NotFoundError("user not found")
 	// }
-
 	// if existingArtist != nil {
 	// 	u.logger.Named("CreateArtist").Error("user already exists", zap.String("userID", dto.UserId))
 	// 	return apperror.BadRequestError("user already exists")

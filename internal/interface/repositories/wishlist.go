@@ -9,6 +9,6 @@ type IWishlistRepository interface {
 	// GetArtistByUserId(userId string) (*entities.Artist, error)
 	// UpdateArtistById(newData entities.Artist, artistId string) error
 	// UpdateArtistByUserId(newData entities.Artist, userId string) error
-	// DeleteArtistById(artistId string) error
+	DeleteWishlistById(favoriteId string) error
 	// DeleteArtistByUserId(userId string) error
 }

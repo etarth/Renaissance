@@ -105,19 +105,19 @@ func (h *WishlistHandler) GetWishlistById(c *fiber.Ctx) error {
 // 	return resp.SendResponse(c, fiber.StatusOK)
 // }
 
-// func (h *ArtworkHandler) DeleteArtworkById(c *fiber.Ctx) error {
-// 	artworkId := c.Params("artwork_id")
-// 	if artworkId == "" {
-// 		resp := response.NewResponseFactory(response.ERROR, "artwork ID is required")
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+func (h *WishlistHandler) DeleteWishlistById(c *fiber.Ctx) error {
+	favoriteId := c.Query("favorite_id")
+	if favoriteId == "" {
+		resp := response.NewResponseFactory(response.ERROR, "artwork ID is required")
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	apperr := h.artworkUsecase.DeleteArtworkById(artworkId)
-// 	if apperr != nil {
-// 		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
-// 		return resp.SendResponse(c, apperr.HttpCode)
-// 	}
+	apperr := h.wishlistUsecase.DeleteWishlistById(favoriteId)
+	if apperr != nil {
+		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
+		return resp.SendResponse(c, apperr.HttpCode)
+	}
 
-// 	resp := response.NewResponseFactory(response.SUCCESS, "Artwork deleted successfully")
-// 	return resp.SendResponse(c, fiber.StatusOK)
-// }
+	resp := response.NewResponseFactory(response.SUCCESS, "Wishlist deleted successfully")
+	return resp.SendResponse(c, fiber.StatusOK)
+}

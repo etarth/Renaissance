@@ -1,11 +1,14 @@
 package usecases
 
 import (
+	"Backend/internal/domain/entities"
 	"Backend/internal/interface/dtos"
 	"Backend/internal/interface/repositories"
 	"Backend/pkg/apperror"
 	"Backend/pkg/config"
+	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.uber.org/zap"
 )
 
@@ -23,44 +26,27 @@ func NewOrderItemsUsecases(cfg config.Config, logger *zap.Logger, orderItemsRepo
 	}
 }
 
-func (u *orderItemsUsecase) GetAllOrderItems() ([]dtos.OrderItemsDTO, *apperror.AppError) {
-	orderItems, err := u.orderItemsRepository.GetAllOrderItems()
+func (u *orderItemsUsecase) GetAllOrderItemsByField(req *dtos.OrderItemsDTO, field string, id string) ([]dtos.OrderItemsDTO, *apperror.AppError) {
+	filter := bson.M{field: id}
+	if field == "all" {
+		filter = bson.M{}
+	}
+	orderItems, err := u.orderItemsRepository.GetAllOrderItemsByField(filter)
 	if err != nil {
-		return nil, apperror.InternalServerError("user not found")
+		return nil, apperror.InternalServerError("could not retrieve order items")
 	}
 
 	res := make([]dtos.OrderItemsDTO, len(orderItems))
-	for i := 0; i < len(orderItems); i++ {
+	for i, item := range orderItems {
 		res[i] = dtos.OrderItemsDTO{
-			OrderItemId: (orderItems)[i].OrderItemId,
-			OrderId:     (orderItems)[i].OrderId,
-			ArtworkId:   (orderItems)[i].ArtworkId,
-			Quantity:    (orderItems)[i].Quantity,
-			TotalPrice:  (orderItems)[i].TotalPrice,
-			CreatedAt:   (orderItems)[i].CreatedAt,
+			OrderItemId: item.OrderItemId,
+			OrderId:     item.OrderId,
+			ArtworkId:   item.ArtworkId,
+			Quantity:    item.Quantity,
+			TotalPrice:  item.TotalPrice,
+			CreatedAt:   item.CreatedAt,
 		}
 	}
-	return res, nil
-}
-
-func (u *orderItemsUsecase) GetAllOrderItemsByOrderId(req *dtos.OrderItemsDTO, orderId string) ([]dtos.OrderItemsDTO, *apperror.AppError) {
-	orderItems, err := u.orderItemsRepository.GetAllOrderItemsByOrderId(orderId)
-	if err != nil {
-		return nil, apperror.InternalServerError("could not retrieve order items for the user")
-	}
-
-	res := make([]dtos.OrderItemsDTO, len(orderItems))
-	for i, orderItems := range orderItems {
-		res[i] = dtos.OrderItemsDTO{
-			OrderItemId: orderItems.OrderItemId,
-			OrderId:     orderItems.OrderId,
-			ArtworkId:   orderItems.ArtworkId,
-			Quantity:    orderItems.Quantity,
-			TotalPrice:  orderItems.TotalPrice,
-			CreatedAt:   orderItems.CreatedAt,
-		}
-	}
-
 	return res, nil
 }
 
@@ -92,31 +78,24 @@ func (u *orderItemsUsecase) GetAllOrderItemsByOrderId(req *dtos.OrderItemsDTO, o
 // 	return res, nil
 // }
 
-// func (u *artworkUsecase) InsertNewArtwork(dto *dtos.InsertNewArtworkDTO) *apperror.AppError {
-// 	newArtwork := entities.Artwork{
-// 		ArtworkId:   dto.ArtworkId,
-// 		ArtistId:    dto.ArtistId,
-// 		Title:       dto.Title,
-// 		Description: dto.Description,
-// 		Category:    dto.Category,
-// 		Style:       dto.Style,
-// 		Width:       dto.Width,
-// 		Height:      dto.Height,
-// 		Price:       dto.Price,
-// 		ImageURL:    dto.ImageURL,
-// 		Stock:       dto.Stock,
-// 		CreatedAt:   time.Now(),
-// 		UpdatedAt:   time.Now(),
-// 	}
+func (u *orderItemsUsecase) InsertNewOrderItems(dto *dtos.InsertNewOrderItemsDTO) *apperror.AppError {
+	newOrderItems := entities.OrderItems{
+		OrderItemId: dto.OrderItemId,
+		OrderId:     dto.OrderId,
+		ArtworkId:   dto.ArtworkId,
+		Quantity:    dto.Quantity,
+		TotalPrice:  dto.TotalPrice,
+		CreatedAt:   time.Now(),
+	}
 
-// 	if err := u.artworkRepository.InsertNewArtwork(newArtwork); err != true {
-// 		u.logger.Named("CreateArtwork").Error("Failed to insert user", zap.String("artistID", dto.ArtistId))
-// 		return apperror.InternalServerError("Failed to insert user")
-// 	}
+	if err := u.orderItemsRepository.InsertNewOrderItems(newOrderItems); err != true {
+		u.logger.Named("CreateOrderItems").Error("Failed to insert order items", zap.String("orderItemsId", dto.OrderItemId))
+		return apperror.InternalServerError("Failed to insert order items")
+	}
 
-// 	u.logger.Named("CreateArtwork").Info("Success: ", zap.String("artist_id", newArtwork.ArtistId))
-// 	return nil
-// }
+	u.logger.Named("CreateOrderItems").Info("Success: ", zap.String("orderItemsId", newOrderItems.OrderItemId))
+	return nil
+}
 
 // func (u *artworkUsecase) UpdateArtworkById(newData dtos.UpdateArtworkByIdDTO, artworkId string) *apperror.AppError {
 // 	artwork, err := u.artworkRepository.GetArtworkById(artworkId)

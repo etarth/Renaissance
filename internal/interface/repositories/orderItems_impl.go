@@ -5,6 +5,7 @@ import (
 	. "Backend/pkg/database"
 	"context"
 
+	fiberlog "github.com/gofiber/fiber/v2/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -22,31 +23,7 @@ func NewOrderItemsRepository(db *MongoDB) IOrderItemsRepository {
 	}
 }
 
-func (r *orderItemsRepository) GetAllOrderItems() ([]entities.OrderItems, error) {
-	options := options.Find()
-	filter := bson.M{}
-	cursor, err := r.Collection.Find(r.Context, filter, options)
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(r.Context)
-
-	pack := make([]entities.OrderItems, 0)
-	for cursor.Next(r.Context) {
-		var item entities.OrderItems
-
-		err := cursor.Decode(&item)
-		if err != nil {
-			continue
-		}
-
-		pack = append(pack, item)
-	}
-	return pack, nil
-}
-
-func (r *orderItemsRepository) GetAllOrderItemsByOrderId(orderId string) ([]entities.OrderItems, error) {
-	filter := bson.M{"order_id": orderId}
+func (r *orderItemsRepository) GetAllOrderItemsByField(filter bson.M) ([]entities.OrderItems, error) {
 	options := options.Find()
 
 	cursor, err := r.Collection.Find(r.Context, filter, options)
@@ -84,13 +61,13 @@ func (r *orderItemsRepository) GetAllOrderItemsByOrderId(orderId string) ([]enti
 // 	return &artwork, nil
 // }
 
-// func (r *artworkRepository) InsertNewArtwork(data entities.Artwork) bool {
-// 	if _, err := r.Collection.InsertOne(r.Context, data); err != nil {
-// 		fiberlog.Errorf("Artwork -> InsertNewArtwork: %s \n", err)
-// 		return false
-// 	}
-// 	return true
-// }
+func (r *orderItemsRepository) InsertNewOrderItems(data entities.OrderItems) bool {
+	if _, err := r.Collection.InsertOne(r.Context, data); err != nil {
+		fiberlog.Errorf("OrderItems -> InsertNewOrderItems: %s \n", err)
+		return false
+	}
+	return true
+}
 
 // func (r *artworkRepository) UpdateArtworkById(newData entities.Artwork, artworkId string) error {
 // 	artworkData := bson.M{"artwork_id": artworkId}

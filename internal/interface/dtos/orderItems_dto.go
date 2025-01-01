@@ -16,10 +16,11 @@ type OrderItemsDTO struct {
 
 // DTO for creating new order items
 type InsertNewOrderItemsDTO struct {
-	OrderId    string  `json:"order_id,omitempty" bson:"order_id,omitempty"`
-	ArtworkId  string  `json:"artwork_id,omitempty" bson:"artwork_id,omitempty"`
-	Quantity   int     `json:"quantity,omitempty" bson:"quantity,omitempty"`
-	TotalPrice float32 `json:"total_price,omitempty" bson:"total_price,omitempty"`
+	OrderItemId string  `json:"order_item_id,omitempty" bson:"order_item_id,omitempty"`
+	OrderId     string  `json:"order_id,omitempty" bson:"order_id,omitempty"`
+	ArtworkId   string  `json:"artwork_id,omitempty" bson:"artwork_id,omitempty"`
+	Quantity    int     `json:"quantity,omitempty" bson:"quantity,omitempty"`
+	TotalPrice  float32 `json:"total_price,omitempty" bson:"total_price,omitempty"`
 }
 
 // DTO for updating existing order items

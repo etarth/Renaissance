@@ -158,12 +158,11 @@ func (s *FiberHttpServer) initWishlistRouter(router fiber.Router, httpHandler ha
 }
 
 func (s *FiberHttpServer) initOrderItemsRouter(router fiber.Router, httpHandler handlers.Handler) {
-	artworkRouter := router.Group("/orderItems")
+	orderItemsRouter := router.Group("/orderItems")
 
-	artworkRouter.Get("/", httpHandler.OrderItems().GetAllOrderItems)
-	artworkRouter.Get("/", httpHandler.OrderItems().GetAllOrderItemsByOrderId)
+	orderItemsRouter.Get("/", httpHandler.OrderItems().GetAllOrderItemsByField)
 	// artworkRouter.Get("/artwork", httpHandler.Artwork().GetArtworkById)
-	// artworkRouter.Post("/", httpHandler.Artwork().InsertNewArtwork)
+	orderItemsRouter.Post("/", httpHandler.OrderItems().InsertNewOrderItems)
 	// artworkRouter.Put("/", httpHandler.Artwork().UpdateArtworkById)
 	// artworkRouter.Delete("/", httpHandler.Artwork().DeleteArtworkById)
 

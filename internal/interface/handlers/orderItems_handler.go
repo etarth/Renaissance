@@ -3,8 +3,10 @@ package handlers
 import (
 	"Backend/internal/domain/usecases"
 	"Backend/internal/interface/dtos"
+	"Backend/pkg/apperror"
 	"Backend/pkg/response"
 	"Backend/pkg/validator"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,28 +23,26 @@ func NewOrderItemsHandler(usecases usecases.IOrderItemsUsecase, validator valida
 	}
 }
 
-func (h *OrderItemsHandler) GetAllOrderItems(c *fiber.Ctx) error {
-	resReturn, err := h.orderItemsUsecase.GetAllOrderItems()
-	if err != nil {
-		resp := response.NewResponseFactory(response.ERROR, err.Error())
-		return resp.SendResponse(c, fiber.StatusBadRequest)
-	}
-	resp := response.NewResponseFactory(response.SUCCESS, resReturn)
-	return resp.SendResponse(c, fiber.StatusOK)
-}
-
-func (h *OrderItemsHandler) GetAllOrderItemsByOrderId(c *fiber.Ctx) error {
+func (h *OrderItemsHandler) GetAllOrderItemsByField(c *fiber.Ctx) error {
 	orderId := c.Query("order_id")
-	if orderId == "" {
-		resp := response.NewResponseFactory(response.ERROR, "User ID is required")
-		return resp.SendResponse(c, fiber.StatusBadRequest)
-	}
+	artworkId := c.Query("artwork_id")
 	req := &dtos.OrderItemsDTO{}
-	orderItems, err := h.orderItemsUsecase.GetAllOrderItemsByOrderId(req, orderId)
+	var orderItems []dtos.OrderItemsDTO
+	var err *apperror.AppError
+
+	if orderId != "" {
+		orderItems, err = h.orderItemsUsecase.GetAllOrderItemsByField(req, "order_id", orderId)
+	} else if artworkId != "" {
+		orderItems, err = h.orderItemsUsecase.GetAllOrderItemsByField(req, "artwork_id", artworkId)
+	} else {
+		orderItems, err = h.orderItemsUsecase.GetAllOrderItemsByField(req, "all", orderId)
+	}
+
 	if err != nil {
 		resp := response.NewResponseFactory(response.ERROR, err.Error())
 		return resp.SendResponse(c, fiber.StatusInternalServerError)
 	}
+
 	resp := response.NewResponseFactory(response.SUCCESS, orderItems)
 	return resp.SendResponse(c, fiber.StatusOK)
 }
@@ -65,27 +65,27 @@ func (h *OrderItemsHandler) GetAllOrderItemsByOrderId(c *fiber.Ctx) error {
 // 	return resp.SendResponse(c, fiber.StatusOK)
 // }
 
-// func (h *ArtworkHandler) InsertNewArtwork(c *fiber.Ctx) error {
-// 	var createArtworkDTO dtos.InsertNewArtworkDTO
-// 	if err := c.BodyParser(&createArtworkDTO); err != nil {
-// 		resp := response.NewResponseFactory(response.ERROR, err.Error())
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+func (h *OrderItemsHandler) InsertNewOrderItems(c *fiber.Ctx) error {
+	var createOrderItemsDTO dtos.InsertNewOrderItemsDTO
+	if err := c.BodyParser(&createOrderItemsDTO); err != nil {
+		resp := response.NewResponseFactory(response.ERROR, err.Error())
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	if errs := h.validator.Validate(createArtworkDTO); len(errs) > 0 {
-// 		resp := response.NewResponseFactory(response.ERROR, strings.Join(errs, ", "))
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+	if errs := h.validator.Validate(createOrderItemsDTO); len(errs) > 0 {
+		resp := response.NewResponseFactory(response.ERROR, strings.Join(errs, ", "))
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	apperr := h.artworkUsecase.InsertNewArtwork(&createArtworkDTO)
-// 	if apperr != nil {
-// 		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
-// 		return resp.SendResponse(c, apperr.HttpCode)
-// 	}
+	apperr := h.orderItemsUsecase.InsertNewOrderItems(&createOrderItemsDTO)
+	if apperr != nil {
+		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
+		return resp.SendResponse(c, apperr.HttpCode)
+	}
 
-// 	resp := response.NewResponseFactory(response.SUCCESS, createArtworkDTO)
-// 	return resp.SendResponse(c, fiber.StatusCreated)
-// }
+	resp := response.NewResponseFactory(response.SUCCESS, createOrderItemsDTO)
+	return resp.SendResponse(c, fiber.StatusCreated)
+}
 
 // func (h *ArtworkHandler) UpdateArtworkById(c *fiber.Ctx) error {
 // 	artworkId := c.Query("artwork_id")

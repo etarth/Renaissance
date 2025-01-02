@@ -8,4 +8,5 @@ type Handler interface {
 	// Document() *DocumentHandler
 	Artist() *ArtistHandler
 	Artwork() *ArtworkHandler
+	Review() *ReviewHandler
 }

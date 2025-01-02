@@ -34,3 +34,12 @@ type Category struct {
 	CategoryName string `json:"category_name,omitempty" bson:"category_name,omitempty"`
 	Description  string `json:"description,omitempty" bson:"description,omitempty"`
 }
+
+type Review struct {
+	ReviewId  string    `json:"review_id,omitempty" bson:"review_id,omitempty"`
+	UserId    string    `json:"user_id,omitempty" bson:"user_id,omitempty"`
+	ArtistId  string    `json:"artist_id,omitempty" bson:"artist_id,omitempty"`
+	Rating    string    `json:"rating,omitempty" bson:"rating,omitempty"`
+	Comment   string    `json:"comment,omitempty" bson:"comment,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
+}

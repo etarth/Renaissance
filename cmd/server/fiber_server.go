@@ -49,6 +49,7 @@ func (s *FiberHttpServer) Start() {
 	// s.initDocumentRouter(router, s.handlers)
 	s.initArtistRouter(router, s.handlers)
 	s.initArtworkRouter(router, s.handlers)
+	s.initReviewRouter(router, s.handlers)
 
 	// Setup signal capturing for graceful shutdown
 	quit := make(chan os.Signal, 1)
@@ -155,4 +156,15 @@ func (s *FiberHttpServer) initDocumentRouter(router fiber.Router, httpHandler ha
 	// documentRouter.Patch("/:document_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.Document().UpdateDocumentByID)
 	// documentRouter.Delete("/:document_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.Document().DeleteDocumentByID)
 
+}
+
+func (s *FiberHttpServer) initReviewRouter(router fiber.Router, httpHandler handlers.Handler) {
+	reviewRouter := router.Group("/reviews")
+
+	reviewRouter.Get("/", httpHandler.Review().GetAllReviews)
+	reviewRouter.Post("/", httpHandler.Review().InsertNewReview)
+	reviewRouter.Get("/:review_id", httpHandler.Review().GetReviewById)
+	reviewRouter.Put("/:review_id", httpHandler.Review().UpdateReviewById)
+	reviewRouter.Delete("/:review_id", httpHandler.Review().DeleteReviewById)
+	reviewRouter.Get("/average-rating/:artist_id", httpHandler.Review().GetAverageRatingByArtistId)
 }

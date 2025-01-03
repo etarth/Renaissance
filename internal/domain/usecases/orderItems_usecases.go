@@ -6,6 +6,7 @@ import (
 	"Backend/internal/interface/repositories"
 	"Backend/pkg/apperror"
 	"Backend/pkg/config"
+	"reflect"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -50,33 +51,26 @@ func (u *orderItemsUsecase) GetAllOrderItemsByField(req *dtos.OrderItemsDTO, fie
 	return res, nil
 }
 
-// func (u *artworkUsecase) GetArtworkById(req *dtos.ArtworkDTO, artworkId string) (*dtos.ArtworkDTO, *apperror.AppError) {
-// 	artwork, err := u.artworkRepository.GetArtworkById(artworkId)
-// 	if err != nil {
-// 		return nil, apperror.InternalServerError("failed to fetch artwork")
-// 	}
+func (u *orderItemsUsecase) GetOrderItemsById(req *dtos.OrderItemsDTO, orderItemsId string) (*dtos.OrderItemsDTO, *apperror.AppError) {
+	orderItem, err := u.orderItemsRepository.GetOrderItemsById(orderItemsId)
+	if err != nil {
+		return nil, apperror.InternalServerError("failed to fetch OrderItems")
+	}
 
-// 	if artwork == nil {
-// 		return &dtos.ArtworkDTO{}, nil
-// 	}
+	if orderItem == nil {
+		return &dtos.OrderItemsDTO{}, nil
+	}
 
-// 	res := &dtos.ArtworkDTO{
-// 		ArtworkId:   artwork.ArtworkId,
-// 		ArtistId:    artwork.ArtistId,
-// 		Title:       artwork.Title,
-// 		Description: artwork.Description,
-// 		Category:    artwork.Category,
-// 		Style:       artwork.Style,
-// 		Width:       artwork.Width,
-// 		Height:      artwork.Height,
-// 		Price:       artwork.Price,
-// 		ImageURL:    artwork.ImageURL,
-// 		Stock:       artwork.Stock,
-// 		CreatedAt:   artwork.CreatedAt,
-// 		UpdatedAt:   artwork.UpdatedAt,
-// 	}
-// 	return res, nil
-// }
+	res := &dtos.OrderItemsDTO{
+		OrderItemId: orderItem.OrderItemId,
+		OrderId:     orderItem.OrderId,
+		ArtworkId:   orderItem.ArtworkId,
+		Quantity:    orderItem.Quantity,
+		TotalPrice:  orderItem.TotalPrice,
+		CreatedAt:   orderItem.CreatedAt,
+	}
+	return res, nil
+}
 
 func (u *orderItemsUsecase) InsertNewOrderItems(dto *dtos.InsertNewOrderItemsDTO) *apperror.AppError {
 	newOrderItems := entities.OrderItems{
@@ -97,63 +91,67 @@ func (u *orderItemsUsecase) InsertNewOrderItems(dto *dtos.InsertNewOrderItemsDTO
 	return nil
 }
 
-// func (u *artworkUsecase) UpdateArtworkById(newData dtos.UpdateArtworkByIdDTO, artworkId string) *apperror.AppError {
-// 	artwork, err := u.artworkRepository.GetArtworkById(artworkId)
-// 	if err != nil {
-// 		return apperror.InternalServerError("failed to fetch artwork")
-// 	}
-// 	if artwork == nil {
-// 		return apperror.NotFoundError("artwork not found")
-// 	}
+func (u *orderItemsUsecase) UpdateOrderItemsById(newData dtos.UpdateOrderItemsByIdDTO, orderItemsId string) *apperror.AppError {
+	// Fetch the existing order item
+	orderItem, err := u.orderItemsRepository.GetOrderItemsById(orderItemsId)
+	if err != nil {
+		return apperror.InternalServerError("failed to fetch orderItems")
+	}
+	if orderItem == nil {
+		return apperror.NotFoundError("orderItems not found")
+	}
 
-// 	// Reflect over newData and artwork to apply updates
-// 	newDataValue := reflect.ValueOf(newData)
-// 	artworkValue := reflect.ValueOf(artwork).Elem() // Dereference pointer
+	// Prepare for reflection-based update
+	newDataValue := reflect.ValueOf(newData)
+	newDataType := reflect.TypeOf(newData)
+	updateFields := bson.M{} // Map to hold update fields
 
-// 	for i := 0; i < newDataValue.NumField(); i++ {
-// 		field := newDataValue.Type().Field(i) // Get the field definition
-// 		newValue := newDataValue.Field(i)     // Get the value of the field in newData
+	// Reflect over newData and extract fields to update
+	for i := 0; i < newDataValue.NumField(); i++ {
+		field := newDataType.Field(i)
+		fieldName := field.Tag.Get("bson") // Extract BSON tag
+		fieldValue := newDataValue.Field(i)
 
-// 		// Only update if the field is not the zero value (empty or nil)
-// 		if !newValue.IsZero() {
-// 			artworkField := artworkValue.FieldByName(field.Name)
-// 			if artworkField.IsValid() && artworkField.CanSet() {
-// 				// Handle both pointer and non-pointer types
-// 				if artworkField.Kind() == reflect.Ptr && newValue.Kind() != reflect.Ptr {
-// 					// If artwork field is a pointer but new value is not a pointer, we create a new pointer for the field
-// 					artworkField.Set(reflect.New(artworkField.Type().Elem()).Elem())
-// 				}
-// 				// Update the field with the new value
-// 				artworkField.Set(newValue)
-// 			}
-// 		}
-// 	}
-// 	artwork.UpdatedAt = time.Now() // Set the updatedAt timestamp
+		if fieldName != "" && !fieldValue.IsZero() {
+			// Handle pointer types
+			if fieldValue.Kind() == reflect.Ptr {
+				if !fieldValue.IsNil() {
+					updateFields[fieldName] = fieldValue.Elem().Interface()
+				}
+			} else {
+				// Handle non-pointer values
+				updateFields[fieldName] = fieldValue.Interface()
+			}
+		}
+	}
 
-// 	if err := u.artworkRepository.UpdateArtworkById(*artwork, artworkId); err != nil {
-// 		u.logger.Named("UpdateArtworkById").Error("Failed to update artwork", zap.String("artwork_id", artworkId))
-// 		return apperror.InternalServerError("failed to update artwork")
-// 	}
+	// Update the database if there are fields to update
+	if len(updateFields) > 0 {
+		if err := u.orderItemsRepository.UpdateOrderItemsById(updateFields, orderItemsId); err != nil {
+			u.logger.Named("UpdateOrderItemsById").Error("Failed to update orderItems", zap.String("orderItems_id", orderItemsId))
+			return apperror.InternalServerError("failed to update orderItems")
+		}
+	}
 
-// 	u.logger.Named("UpdateArtworkById").Info("Success", zap.String("artwork_id", artworkId))
-// 	return nil
-// }
+	u.logger.Named("UpdateOrderItemsById").Info("Success", zap.String("orderItems_id", orderItemsId))
+	return nil
+}
 
-// func (u *artworkUsecase) DeleteArtworkById(artworkId string) *apperror.AppError {
-// 	artwork, err := u.artworkRepository.GetArtworkById(artworkId)
-// 	if err != nil {
-// 		return apperror.InternalServerError("failed to fetch artwork")
-// 	}
-// 	if artwork == nil {
-// 		return apperror.NotFoundError("artwork not found")
-// 	}
+func (u *orderItemsUsecase) DeleteOrderItemsById(orderItemsId string) *apperror.AppError {
+	orderItem, err := u.orderItemsRepository.GetOrderItemsById(orderItemsId)
+	if err != nil {
+		return apperror.InternalServerError("failed to fetch orderItems")
+	}
+	if orderItem == nil {
+		return apperror.NotFoundError("orderItems not found")
+	}
 
-// 	err = u.artworkRepository.DeleteArtworkById(artworkId)
-// 	if err != nil {
-// 		u.logger.Named("DeleteArtworkById").Error("Failed to delete artwork", zap.String("artwork_id", artworkId))
-// 		return apperror.InternalServerError("failed to delete artwork")
-// 	}
+	err = u.orderItemsRepository.DeleteOrderItemsById(orderItemsId)
+	if err != nil {
+		u.logger.Named("DeleteOrderItemsById").Error("failed to delete orderItems", zap.String("orderItems_id", orderItemsId))
+		return apperror.InternalServerError("failed to delete orderItems")
+	}
 
-// 	u.logger.Named("DeleteArtworkById").Info("Artwork deleted successfully", zap.String("artwork_id", artworkId))
-// 	return nil
-// }
+	u.logger.Named("DeleteOrderItemsById").Info("orderItems deleted successfully", zap.String("orderItems_id", orderItemsId))
+	return nil
+}

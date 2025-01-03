@@ -161,10 +161,10 @@ func (s *FiberHttpServer) initOrderItemsRouter(router fiber.Router, httpHandler 
 	orderItemsRouter := router.Group("/orderItems")
 
 	orderItemsRouter.Get("/", httpHandler.OrderItems().GetAllOrderItemsByField)
-	// artworkRouter.Get("/artwork", httpHandler.Artwork().GetArtworkById)
+	orderItemsRouter.Get("/orderItem", httpHandler.OrderItems().GetOrderItemsById)
 	orderItemsRouter.Post("/", httpHandler.OrderItems().InsertNewOrderItems)
-	// artworkRouter.Put("/", httpHandler.Artwork().UpdateArtworkById)
-	// artworkRouter.Delete("/", httpHandler.Artwork().DeleteArtworkById)
+	orderItemsRouter.Put("/", httpHandler.OrderItems().UpdateOrderItemsById)
+	orderItemsRouter.Delete("/", httpHandler.OrderItems().DeleteOrderItemsById)
 
 }
 

@@ -47,19 +47,19 @@ func (r *orderItemsRepository) GetAllOrderItemsByField(filter bson.M) ([]entitie
 	return orderItems, nil
 }
 
-// func (r *artworkRepository) GetArtworkById(artworkId string) (*entities.Artwork, error) {
-// 	var artwork entities.Artwork
-// 	filter := bson.M{"artwork_id": artworkId}
+func (r *orderItemsRepository) GetOrderItemsById(orderItemsId string) (*entities.OrderItems, error) {
+	var orderItem entities.OrderItems
+	filter := bson.M{"order_item_id": orderItemsId}
 
-// 	err := r.Collection.FindOne(r.Context, filter).Decode(&artwork)
-// 	if err != nil {
-// 		if err == mongo.ErrNoDocuments {
-// 			return nil, nil
-// 		}
-// 		return nil, err
-// 	}
-// 	return &artwork, nil
-// }
+	err := r.Collection.FindOne(r.Context, filter).Decode(&orderItem)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &orderItem, nil
+}
 
 func (r *orderItemsRepository) InsertNewOrderItems(data entities.OrderItems) bool {
 	if _, err := r.Collection.InsertOne(r.Context, data); err != nil {
@@ -69,77 +69,27 @@ func (r *orderItemsRepository) InsertNewOrderItems(data entities.OrderItems) boo
 	return true
 }
 
-// func (r *artworkRepository) UpdateArtworkById(newData entities.Artwork, artworkId string) error {
-// 	artworkData := bson.M{"artwork_id": artworkId}
+func (r *orderItemsRepository) UpdateOrderItemsById(updateFields bson.M, orderItemsId string) error {
+	filter := bson.M{"order_item_id": orderItemsId}
 
-// 	_, err := r.Collection.UpdateOne(r.Context, artworkData, bson.M{"$set": newData})
+	_, err := r.Collection.UpdateOne(r.Context, filter, bson.M{"$set": updateFields})
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
-// 	if err != nil {
-// 		if err == mongo.ErrNoDocuments {
-// 			return nil
-// 		}
-// 		return err
-// 	}
-// 	return nil
-// }
+func (r *orderItemsRepository) DeleteOrderItemsById(orderItemsId string) error {
+	orderItemsData := bson.M{"order_item_id": orderItemsId}
 
-// func (r *artistRepository) GetArtistByUserId(userId string) (*entities.Artist, error) {
-// 	var artist entities.Artist
-// 	filter := bson.M{"user_id": userId}
+	_, err := r.Collection.DeleteOne(r.Context, orderItemsData)
 
-// 	err := r.Collection.FindOne(r.Context, filter).Decode(&artist)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil
+		}
+		return err
+	}
 
-// 	if err != nil {
-// 		if err == mongo.ErrNoDocuments {
-// 			return nil, nil
-// 		}
-// 		return nil, err
-// 	}
-
-// 	return &artist, nil
-// }
-
-// func (r *artistRepository) UpdateArtistByUserId(newData entities.Artist, userId string) error {
-// 	artistData := bson.M{"user_id": userId}
-
-// 	_, err := r.Collection.UpdateOne(r.Context, artistData, bson.M{"$set": newData})
-
-// 	if err != nil {
-// 		if err == mongo.ErrNoDocuments {
-// 			return nil
-// 		}
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
-// func (r *artworkRepository) DeleteArtworkById(artworkId string) error {
-// 	artworkData := bson.M{"artwork_id": artworkId}
-
-// 	_, err := r.Collection.DeleteOne(r.Context, artworkData)
-
-// 	if err != nil {
-// 		if err == mongo.ErrNoDocuments {
-// 			return nil
-// 		}
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
-// func (r *artistRepository) DeleteArtistByUserId(userId string) error {
-// 	artistData := bson.M{"user_id": userId}
-
-// 	_, err := r.Collection.DeleteOne(r.Context, artistData)
-
-// 	if err != nil {
-// 		if err == mongo.ErrNoDocuments {
-// 			return nil
-// 		}
-// 		return err
-// 	}
-
-// 	return nil
-// }
+	return nil
+}

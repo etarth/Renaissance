@@ -47,23 +47,23 @@ func (h *OrderItemsHandler) GetAllOrderItemsByField(c *fiber.Ctx) error {
 	return resp.SendResponse(c, fiber.StatusOK)
 }
 
-// func (h *ArtworkHandler) GetArtworkById(c *fiber.Ctx) error {
-// 	artworkId := c.Query("artwork_id")
-// 	if artworkId == "" {
-// 		resp := response.NewResponseFactory(response.ERROR, "Artwork ID is required")
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+func (h *OrderItemsHandler) GetOrderItemsById(c *fiber.Ctx) error {
+	orderItemsId := c.Query("orderItems_id")
+	if orderItemsId == "" {
+		resp := response.NewResponseFactory(response.ERROR, "orderItems ID is required")
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	req := &dtos.ArtworkDTO{}
-// 	artwork, err := h.artworkUsecase.GetArtworkById(req, artworkId)
-// 	if err != nil {
-// 		resp := response.NewResponseFactory(response.ERROR, err.Error())
-// 		return resp.SendResponse(c, fiber.StatusInternalServerError)
-// 	}
+	req := &dtos.OrderItemsDTO{}
+	orderItems, err := h.orderItemsUsecase.GetOrderItemsById(req, orderItemsId)
+	if err != nil {
+		resp := response.NewResponseFactory(response.ERROR, err.Error())
+		return resp.SendResponse(c, fiber.StatusInternalServerError)
+	}
 
-// 	resp := response.NewResponseFactory(response.SUCCESS, artwork)
-// 	return resp.SendResponse(c, fiber.StatusOK)
-// }
+	resp := response.NewResponseFactory(response.SUCCESS, orderItems)
+	return resp.SendResponse(c, fiber.StatusOK)
+}
 
 func (h *OrderItemsHandler) InsertNewOrderItems(c *fiber.Ctx) error {
 	var createOrderItemsDTO dtos.InsertNewOrderItemsDTO
@@ -87,47 +87,47 @@ func (h *OrderItemsHandler) InsertNewOrderItems(c *fiber.Ctx) error {
 	return resp.SendResponse(c, fiber.StatusCreated)
 }
 
-// func (h *ArtworkHandler) UpdateArtworkById(c *fiber.Ctx) error {
-// 	artworkId := c.Query("artwork_id")
-// 	if artworkId == "" {
-// 		resp := response.NewResponseFactory(response.ERROR, "artwork ID is required")
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+func (h *OrderItemsHandler) UpdateOrderItemsById(c *fiber.Ctx) error {
+	orderItemsId := c.Query("orderItems_id")
+	if orderItemsId == "" {
+		resp := response.NewResponseFactory(response.ERROR, "orderItems ID is required")
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	var updateArtworkDTO dtos.UpdateArtworkByIdDTO
-// 	if err := c.BodyParser(&updateArtworkDTO); err != nil {
-// 		resp := response.NewResponseFactory(response.ERROR, err.Error())
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+	var updateorderItemsDTO dtos.UpdateOrderItemsByIdDTO
+	if err := c.BodyParser(&updateorderItemsDTO); err != nil {
+		resp := response.NewResponseFactory(response.ERROR, err.Error())
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	if errs := h.validator.Validate(updateArtworkDTO); len(errs) > 0 {
-// 		resp := response.NewResponseFactory(response.ERROR, strings.Join(errs, ", "))
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+	if errs := h.validator.Validate(updateorderItemsDTO); len(errs) > 0 {
+		resp := response.NewResponseFactory(response.ERROR, strings.Join(errs, ", "))
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	apperr := h.artworkUsecase.UpdateArtworkById(updateArtworkDTO, artworkId)
-// 	if apperr != nil {
-// 		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
-// 		return resp.SendResponse(c, apperr.HttpCode)
-// 	}
+	apperr := h.orderItemsUsecase.UpdateOrderItemsById(updateorderItemsDTO, orderItemsId)
+	if apperr != nil {
+		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
+		return resp.SendResponse(c, apperr.HttpCode)
+	}
 
-// 	resp := response.NewResponseFactory(response.SUCCESS, updateArtworkDTO)
-// 	return resp.SendResponse(c, fiber.StatusOK)
-// }
+	resp := response.NewResponseFactory(response.SUCCESS, updateorderItemsDTO)
+	return resp.SendResponse(c, fiber.StatusOK)
+}
 
-// func (h *ArtworkHandler) DeleteArtworkById(c *fiber.Ctx) error {
-// 	artworkId := c.Query("artwork_id")
-// 	if artworkId == "" {
-// 		resp := response.NewResponseFactory(response.ERROR, "artwork ID is required")
-// 		return resp.SendResponse(c, fiber.StatusBadRequest)
-// 	}
+func (h *OrderItemsHandler) DeleteOrderItemsById(c *fiber.Ctx) error {
+	orderItemsId := c.Query("orderItems_id")
+	if orderItemsId == "" {
+		resp := response.NewResponseFactory(response.ERROR, "orderItems ID is required")
+		return resp.SendResponse(c, fiber.StatusBadRequest)
+	}
 
-// 	apperr := h.artworkUsecase.DeleteArtworkById(artworkId)
-// 	if apperr != nil {
-// 		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
-// 		return resp.SendResponse(c, apperr.HttpCode)
-// 	}
+	apperr := h.orderItemsUsecase.DeleteOrderItemsById(orderItemsId)
+	if apperr != nil {
+		resp := response.NewResponseFactory(response.ERROR, apperr.Error())
+		return resp.SendResponse(c, apperr.HttpCode)
+	}
 
-// 	resp := response.NewResponseFactory(response.SUCCESS, "Artwork deleted successfully")
-// 	return resp.SendResponse(c, fiber.StatusOK)
-// }
+	resp := response.NewResponseFactory(response.SUCCESS, "orderItems deleted successfully")
+	return resp.SendResponse(c, fiber.StatusOK)
+}

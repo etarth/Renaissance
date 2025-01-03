@@ -8,11 +8,8 @@ import (
 
 type IOrderItemsRepository interface {
 	GetAllOrderItemsByField(filter bson.M) ([]entities.OrderItems, error)
-	// GetArtworkById(artworkId string) (*entities.Artwork, error)
-	// GetArtistByUserId(userId string) (*entities.Artist, error)
+	GetOrderItemsById(orderItemsId string) (*entities.OrderItems, error)
 	InsertNewOrderItems(data entities.OrderItems) bool
-	// UpdateArtworkById(newData entities.Artwork, artworkId string) error
-	// UpdateArtistByUserId(newData entities.Artist, userId string) error
-	// DeleteArtworkById(artworkId string) error
-	// DeleteArtistByUserId(userId string) error
+	UpdateOrderItemsById(updateFields bson.M, orderItemsId string) error
+	DeleteOrderItemsById(orderItemsId string) error
 }

@@ -7,4 +7,5 @@ type Handler interface {
 	// Attachment() *AttachmentHandler
 	// Document() *DocumentHandler
 	Artist() *ArtistHandler
+	// Artwork() *ArtworkHandler
 }

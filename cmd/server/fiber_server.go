@@ -48,6 +48,7 @@ func (s *FiberHttpServer) Start() {
 	// s.initAttachmentRouter(router, s.handlers)
 	// s.initDocumentRouter(router, s.handlers)
 	s.initArtistRouter(router, s.handlers)
+	// s.initArtworkRouter(router, s.handlers)
 
 	// Setup signal capturing for graceful shutdown
 	quit := make(chan os.Signal, 1)
@@ -109,38 +110,53 @@ func (s *FiberHttpServer) initHttpServer() fiber.Router {
 	return router
 }
 
-func (s *FiberHttpServer) initAuthRouter(router fiber.Router, httpHandler handlers.Handler) {
-	// authRouter := router.Group("/auth")
+// func (s *FiberHttpServer) initAuthRouter(router fiber.Router, httpHandler handlers.Handler) {
+// authRouter := router.Group("/auth")
 
-	// authRouter.Post("/login", httpHandler.Auth().Login)
-	// authRouter.Get("/me", httpHandler.Middleware().IsLogin, httpHandler.Auth().GetMe)
-}
+// authRouter.Post("/login", httpHandler.Auth().Login)
+// authRouter.Get("/me", httpHandler.Middleware().IsLogin, httpHandler.Auth().GetMe)
+// }
 
-func (s *FiberHttpServer) initUserRouter(router fiber.Router, httpHandler handlers.Handler) {
-	// userRouter := router.Group("/users")
+// func (s *FiberHttpServer) initUserRouter(router fiber.Router, httpHandler handlers.Handler) {
+// userRouter := router.Group("/users")
 
-	// userRouter.Get("/", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().GetAllUsers)
-	// userRouter.Get("/:user_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().GetUserByID)
-	// userRouter.Post("/", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().CreateUser)
-	// userRouter.Patch("/", httpHandler.Middleware().IsLogin, httpHandler.User().UpdateProfile)
-	// userRouter.Put("/:user_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().UpdateUserByID)
-	// userRouter.Delete("/:user_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().DeleteUserByID)
-}
+// userRouter.Get("/", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().GetAllUsers)
+// userRouter.Get("/:user_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().GetUserByID)
+// userRouter.Post("/", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().CreateUser)
+// userRouter.Patch("/", httpHandler.Middleware().IsLogin, httpHandler.User().UpdateProfile)
+// userRouter.Put("/:user_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().UpdateUserByID)
+// userRouter.Delete("/:user_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.User().DeleteUserByID)
+// }
 
 func (s *FiberHttpServer) initArtistRouter(router fiber.Router, httpHandler handlers.Handler) {
 	artistRouter := router.Group("/artists")
 
 	artistRouter.Get("/", httpHandler.Artist().GetAllArtists)
+	artistRouter.Get("/:artist_id", httpHandler.Artist().GetArtistById)
+	artistRouter.Get("/:user_id", httpHandler.Artist().GetArtistByUserId)
 	artistRouter.Post("/", httpHandler.Artist().InsertNewArtist)
+	artistRouter.Put("/:artist_id", httpHandler.Artist().UpdateArtistById)
+	artistRouter.Delete("/:artist_id", httpHandler.Artist().DeleteArtistById)
+	artistRouter.Delete("/:user_id", httpHandler.Artist().DeleteArtistByUserId)
 }
 
-func (s *FiberHttpServer) initDocumentRouter(router fiber.Router, httpHandler handlers.Handler) {
-	// documentRouter := router.Group("/documents")
+// func (s *FiberHttpServer) initArtworkRouter(router fiber.Router, httpHandler handlers.Handler) {
+// artworkRouter := router.Group("/artworks")
 
-	// documentRouter.Get("/", httpHandler.Document().GetAllDocuments)
-	// documentRouter.Get("/role/:role_id", httpHandler.Document().GetDocumentsByRole)
-	// documentRouter.Post("/", httpHandler.Middleware().IsLogin, httpHandler.Document().CreateDocument)
-	// documentRouter.Patch("/:document_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.Document().UpdateDocumentByID)
-	// documentRouter.Delete("/:document_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.Document().DeleteDocumentByID)
+// artworkRouter.Get("/", httpHandler.Artwork().GetAllArtworks)
+// artworkRouter.Get("/:artwork_id", httpHandler.Artwork().GetArtworkById)
+// artworkRouter.Post("/", httpHandler.Artwork().InsertNewArtwork)
+// artworkRouter.Put("/:artwork_id", httpHandler.Artwork().UpdateArtworkById)
+// artworkRouter.Delete("/:artwork_id", httpHandler.Artwork().DeleteArtworkById)
+// }
 
-}
+// func (s *FiberHttpServer) initDocumentRouter(router fiber.Router, httpHandler handlers.Handler) {
+// documentRouter := router.Group("/documents")
+
+// documentRouter.Get("/", httpHandler.Document().GetAllDocuments)
+// documentRouter.Get("/role/:role_id", httpHandler.Document().GetDocumentsByRole)
+// documentRouter.Post("/", httpHandler.Middleware().IsLogin, httpHandler.Document().CreateDocument)
+// documentRouter.Patch("/:document_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.Document().UpdateDocumentByID)
+// documentRouter.Delete("/:document_id", httpHandler.Middleware().IsLogin, httpHandler.Middleware().SuperAdmin, httpHandler.Document().DeleteDocumentByID)
+
+// }
